@@ -80,7 +80,9 @@ const SellScreen = () => {
               <TextInput
                 className="flex-1 text-textPrimary"
                 placeholder="Quantity"
+                placeholderTextColor={"#A3A3B3"}
                 style={{ fontFamily: "interSemiBold" }}
+                keyboardType="number-pad"
               />
             </View>
           </View>
@@ -95,8 +97,10 @@ const SellScreen = () => {
             <View className="px-2 py-2 border border-border flex-row items-center">
               <TextInput
                 className="flex-1 text-textPrimary"
-                placeholder="Quantity"
+                placeholder="Market"
+                placeholderTextColor={"#A3A3B3"}
                 style={{ fontFamily: "interSemiBold" }}
+                keyboardType="number-pad"
               />
               <View className="px-2">
                 <MaterialIcons name="swap-horiz" size={26} color="#DF514D" />
@@ -153,8 +157,10 @@ const SellScreen = () => {
               <View className="px-2 py-2 border border-border flex-row items-center">
                 <TextInput
                   className="flex-1 text-textPrimary"
-                  placeholder="Quantity"
+                  placeholder="Limit"
+                  placeholderTextColor={"#A3A3B3"}
                   style={{ fontFamily: "interSemiBold" }}
+                  keyboardType="number-pad"
                 />
               </View>
             </View>

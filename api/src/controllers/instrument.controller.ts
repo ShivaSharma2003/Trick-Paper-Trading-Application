@@ -1,5 +1,5 @@
 import { redis } from "@config/redis.config";
-import { InstrumentDTO } from "@data/instrument";
+import { InstrumentDTO } from "types/instrument";
 
 export const fetchInstruments = async (req, res) => {
   try {

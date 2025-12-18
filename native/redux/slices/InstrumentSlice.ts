@@ -24,7 +24,7 @@ export const fetchInstruments = createAsyncThunk(
       return data.instruments;
     } catch (error) {
       console.log(error);
-      rejectWithValue(error);
+      return rejectWithValue(error);
     }
   }
 );
@@ -37,7 +37,7 @@ export const fetchInstrumentBytoken = createAsyncThunk(
       return data.instrument;
     } catch (error) {
       console.log(error);
-      rejectWithValue(error);
+      return rejectWithValue(error);
     }
   }
 );

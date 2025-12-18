@@ -2,6 +2,7 @@ import AppText from "@/components/Common/AppText";
 import { useAppSelector } from "@/redux/hook";
 import { router, Slot } from "expo-router";
 import { TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Profilelayout = () => {
   const { loggedIn } = useAppSelector((state) => state.auth);
@@ -40,7 +41,11 @@ const Profilelayout = () => {
         </View>
       </View>
     );
-  return <Slot />;
+  return (
+    <SafeAreaView className="flex-1 bg-background px-4">
+      <Slot />
+    </SafeAreaView>
+  );
 };
 
 export default Profilelayout;

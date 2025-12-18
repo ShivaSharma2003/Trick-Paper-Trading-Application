@@ -1,5 +1,5 @@
 import { redis } from "@config/redis.config";
-import { InstrumentDTO, RawInstruments } from "@data/instrument";
+import { InstrumentDTO, RawInstruments } from "types/instrument";
 import InstrumentModel from "@models/instrumentModel";
 import axios from "axios";
 

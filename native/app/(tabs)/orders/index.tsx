@@ -1,14 +1,16 @@
 import AppText from "@/components/Common/AppText";
 import OrderItemContainer from "@/components/Container/OrderItemContainer";
-import { OrderData } from "@/data/OrdersData";
+import { useAppSelector } from "@/redux/hook";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import { FlatList, Pressable, TouchableOpacity, View } from "react-native";
+import { FlatList, Pressable, View } from "react-native";
 
 export default function OrderScreen() {
   const Tabs = ["Open", "Executed"];
   const [activeTab, setActivetab] = useState<string>("Executed");
+  const { orders } = useAppSelector((state) => state.order);
+
   return (
     <View className="flex-1 py-4">
       {/*  */}
@@ -54,11 +56,11 @@ export default function OrderScreen() {
 
         {/*  */}
         <FlatList
-          data={OrderData}
+          data={orders}
           showsVerticalScrollIndicator={false}
           contentContainerClassName="px-6"
           renderItem={({ item }) => {
-            return <OrderItemContainer item={item} />;
+            return <OrderItemContainer item={item ?? []} />;
           }}
         />
       </View>

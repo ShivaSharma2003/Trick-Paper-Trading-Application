@@ -11,6 +11,8 @@ const OrderLayout = () => {
   useEffect(() => {
     dispatch(fetchInstrumentBytoken(String(tokenId)));
   }, [dispatch, tokenId]);
+
+
   return (
     <SafeAreaView className="py-2 bg-backgroundSecondary flex-1">
       <Slot />

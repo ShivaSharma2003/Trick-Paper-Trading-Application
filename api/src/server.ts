@@ -83,8 +83,8 @@ server.listen(process.env.PORT, () =>
   console.info("Server listening on port ", process.env.PORT)
 );
 
-import { storeInstrument } from "@helpers/instrument";
-storeInstrument();
+// import { storeInstrument } from "@helpers/instrument";
+// storeInstrument(); 
 
 // Scheduler for fetching instruments every morning @08:30 AM
 import { fetchInstrumentScheduler } from "@helpers/scheduler";

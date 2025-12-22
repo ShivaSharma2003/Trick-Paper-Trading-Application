@@ -1,4 +1,4 @@
-import { orderType } from "@/types/OrderTypes";
+import { OrderResponse, orderType } from "@/types/OrderTypes";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import axiosInstance from "@/config/axios.config";
@@ -7,7 +7,7 @@ interface OrderInitialState {
   loading: boolean;
   error: string | null;
   orderStatus: boolean;
-  orders: orderType[] | null;
+  orders: OrderResponse[] | null;
   order: orderType | null;
 }
 
@@ -110,6 +110,7 @@ const orderSlice = createSlice({
       })
       .addCase(createOrder.pending, (state) => {
         state.loading = true;
+        state.orderStatus = false;
       })
       .addCase(createOrder.fulfilled, (state, action) => {
         state.loading = false;
@@ -119,8 +120,9 @@ const orderSlice = createSlice({
       .addCase(createOrder.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error as string;
+        state.orderStatus = false;
       });
   },
 });
 
-export default orderSlice;
+export default orderSlice.reducer;

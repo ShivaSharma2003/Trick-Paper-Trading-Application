@@ -51,7 +51,7 @@ export const loadAccount = createAsyncThunk(
 
 export const fetchUserProfile = createAsyncThunk(
   "fetch/profile",
-  async (token: string, { rejectWithValue, getState }) => {
+  async (token: string, { rejectWithValue }) => {
     try {
       const { data } = await axiosInstance.get("/user", {
         headers: { Authorization: `Bearer ${token}` },

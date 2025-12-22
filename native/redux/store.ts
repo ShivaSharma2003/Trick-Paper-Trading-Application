@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import InstrumentReducer from "@/redux/slices/InstrumentSlice";
 import AuthSlice from "@/redux/slices/AuthSlice";
+import OrderSlice from "@/redux/slices/OrderSlice";
 
 const store = configureStore({
   reducer: {
     instrument: InstrumentReducer,
     auth: AuthSlice,
+    order: OrderSlice,
   },
   middleware: (getDifaultMiddleware) =>
     getDifaultMiddleware({ serializableCheck: false }),

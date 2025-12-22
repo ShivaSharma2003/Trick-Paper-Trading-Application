@@ -32,6 +32,7 @@ const SearchScreen = () => {
         />
         <TextInput
           placeholder="Search & Add"
+          placeholderTextColor={"#A3A3B3"}
           className="flex-1 text-textSecondary"
           autoFocus
           style={{ fontFamily: "inter", fontSize: 16 }}

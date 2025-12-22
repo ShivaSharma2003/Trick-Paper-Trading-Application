@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import { errorHandler } from "./handler";
 const authenticate = async (req, res, next) => {
   try {
     const authorization = req.headers.authorization.startsWith(`Bearer `);
@@ -13,7 +12,6 @@ const authenticate = async (req, res, next) => {
     req.user = verified;
     next();
   } catch (error) {
-    errorHandler({ message: "Invalid Headers" });
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };

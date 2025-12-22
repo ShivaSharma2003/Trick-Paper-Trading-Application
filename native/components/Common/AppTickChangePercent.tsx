@@ -25,7 +25,7 @@ export default function AppTickChangePercent({
     (Number(data?.last_traded_price) - Number(data?.open_price_day)) / 100;
   return (
     <AppText className={`${className}`} textSize={textSize}>
-      {FormatNumber(changePercent / 100)}
+      ({FormatNumber(changePercent / 100)})%
     </AppText>
   );
 }

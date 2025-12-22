@@ -40,7 +40,7 @@ export const fetchOrders = async (req, res) => {
   try {
     const orders = await OrderModel.find({
       userId: req.user.id,
-      craetedAt: { $gte: startOfDay, $lte: endOfDay },
+      createdAt: { $gte: startOfDay, $lte: endOfDay },
     }).sort({
       createdAt: -1,
     });

@@ -2,24 +2,19 @@ import { Pressable, TextInput, TouchableOpacity, View } from "react-native";
 import AppText from "@/components/Common/AppText";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { generateUserId } from "@/utils/Generator";
-import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { useState } from "react";
+import { useAppDispatch } from "@/redux/hook";
 import { registerAccount } from "@/redux/slices/AuthSlice";
-import { router } from "expo-router";
 
 const AuthScreen = () => {
   const [userId, setUserId] = useState(generateUserId());
   const [password, setPassword] = useState<string>("");
   const dispatch = useAppDispatch();
-  const { loggedIn } = useAppSelector((state) => state.auth);
+
 
   const handleRegisterAccount = () => {
     dispatch(registerAccount({ userId, password }));
   };
-
-  useEffect(() => {
-    if (loggedIn) router.replace("/(tabs)/profile");
-  }, [loggedIn]);
 
   return (
     <View className="px-4 felx-col gap-8">

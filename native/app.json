@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "native",
-    "slug": "native",
+    "name": "TRICK",
+    "slug": "TRICK",
     "version": "1.0.0",
     "orientation": "portrait",
-    "scheme": "native",
+    "scheme": "trick",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -12,7 +12,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE"
+        "backgroundImage": "./assets//images/logo.png",
+        "foregroundImage": "./assets/images/logo.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
@@ -27,10 +28,10 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/logo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#081427"
         }
       ]
     ],
@@ -39,7 +40,7 @@
       "reactCompiler": true
     },
     "extra": {
-      "router": {},  
+      "router": {},
       "eas": {
         "projectId": "125fa3b8-5120-44e9-9258-42dcfdddc54d"
       }

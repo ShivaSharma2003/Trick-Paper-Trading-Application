@@ -1,6 +1,7 @@
 import { OrderCreateEngine } from "@services/order.service";
 import OrderModel from "@models/orderModel";
 import { endOfDay, startOfDay } from "@util/date";
+import { initExecution } from "@services/execute.service";
 
 export const createOrder = async (req, res) => {
   try {
@@ -25,11 +26,12 @@ export const createOrder = async (req, res) => {
       triggerPrice,
       userId: req.user.id,
     });
-    console.log(order);
     if (!order)
       return res
         .status(403)
         .json({ message: "Bad Request. Order not created" });
+
+    await initExecution(order);
     return res.status(200).json({ order });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });

@@ -1,4 +1,5 @@
-export const FormatNumber = (value: string | number): string => {
+export const FormatNumber = (value: string | number | undefined): string => {
+  if (value === undefined) value = 0;
   return Number(value).toLocaleString("en-IN", {
     maximumFractionDigits: 2,
     minimumFractionDigits: 2,

@@ -3,7 +3,7 @@ import { Schema } from "mongoose";
 export type orderType = "BUY" | "SELL";
 type transactionType = "MARKET" | "LIMIT" | "ST-L";
 type tradeType = "MIS" | "CNC";
-type orderStatus = "PENDING" | "COMPLETED" | "CANCELLED" | "REJECTED";
+type orderStatus = "PENDING"| "COMPLETED"| "CANCELLED"| "REJECTED";
 
 export interface OrderDTO {
   userId: Schema.Types.ObjectId;
@@ -20,9 +20,10 @@ export interface OrderDTO {
   orderStatus: orderStatus;
   triggerPrice: number;
   limit: number;
+  _id : Schema.Types.ObjectId
 }
 
-export interface OrderEngineArguements {
+export interface OrderEngineParams {
   tradeType: tradeType;
   orderType: orderType;
   transactionType: transactionType;

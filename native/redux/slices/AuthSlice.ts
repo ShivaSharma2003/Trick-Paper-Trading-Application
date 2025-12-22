@@ -63,6 +63,17 @@ export const fetchUserProfile = createAsyncThunk(
   }
 );
 
+export const logOut = createAsyncThunk(
+  "auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      await AsyncStorage.removeItem("native-token");
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "authSlice",
   initialState,
@@ -103,6 +114,13 @@ const authSlice = createSlice({
       })
       .addCase(fetchUserProfile.rejected, (state, action) => {
         state.error = action.error as string;
+      })
+      .addCase(logOut.fulfilled, (state) => {
+        state.loggedIn = false;
+        state.token = null;
+      })
+      .addCase(logOut.rejected, (state) => {
+        state.error = "Failed to LogOut";
       });
   },
 });

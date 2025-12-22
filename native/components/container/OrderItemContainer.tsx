@@ -3,20 +3,27 @@ import { FC } from "react";
 import { View } from "react-native";
 import AppText from "../Common/AppText";
 import { Feather } from "@expo/vector-icons";
-import { FormatTime } from "@/utils/Formatter";
+import { FormatNumber, FormatTime } from "@/utils/Formatter";
 
 interface OrderItemContainerProps {
   item: OrderResponse | null;
 }
 
 const OrderItemContainer: FC<OrderItemContainerProps> = ({ item }) => {
+  const stoplossOrder = item?.transactionType === "ST-L";
+  const limitOrder = item?.transactionType === "LIMIT";
+  const buyOrder = item?.orderType === "BUY";
   return (
     <View className="flex-col gap-2 py-4 border-b border-border">
       {/*  */}
       <View className="flex-row items-center justify-between">
         <View className="flex flex-row items-center gap-2">
-          <View className="px-2 py-1 bg-brandBg">
-            <AppText className="text-brand">{item?.orderType}</AppText>
+          <View
+            className={`px-2 py-1 ${buyOrder ? "bg-brandBg" : "bg-dangerBg"}`}
+          >
+            <AppText className={`${buyOrder ? "text-brand" : "text-danger"}`}>
+              {item?.orderType}
+            </AppText>
           </View>
           <AppText className="text-textSecondary">
             {item?.quantity}/{item?.quantity}
@@ -41,12 +48,34 @@ const OrderItemContainer: FC<OrderItemContainerProps> = ({ item }) => {
           {item?.symbol}
         </AppText>
         <View className="flex-row itesm-center gap-1">
-          <AppText className="text-textMuted" textSize={14}>
-            Avg.
-          </AppText>
-          <AppText className="text-textPrimary" textSize={14}>
-            {item?.price}
-          </AppText>
+          {stoplossOrder ? (
+            <>
+              <AppText className="text-textMuted" textSize={14}>
+                Trigger
+              </AppText>
+              <AppText className="text-textPrimary" textSize={14}>
+                {FormatNumber(item?.triggerPrice)}
+              </AppText>
+            </>
+          ) : limitOrder ? (
+            <>
+              <AppText className="text-textMuted" textSize={14}>
+                Limit
+              </AppText>
+              <AppText className="text-textPrimary" textSize={14}>
+                {FormatNumber(item?.limit)}
+              </AppText>
+            </>
+          ) : (
+            <>
+              <AppText className="text-textMuted" textSize={14}>
+                Avg.
+              </AppText>
+              <AppText className="text-textPrimary" textSize={14}>
+                {FormatNumber(item?.price)}
+              </AppText>
+            </>
+          )}
         </View>
       </View>
 
@@ -60,11 +89,12 @@ const OrderItemContainer: FC<OrderItemContainerProps> = ({ item }) => {
             {item?.tradeType}
           </AppText>
           <AppText className="text-textMuted" textSize={12}>
-            {item?.orderOption}
+            {item?.transactionType}
           </AppText>
         </View>
       </View>
     </View>
   );
 };
+
 export default OrderItemContainer;

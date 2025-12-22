@@ -1,25 +1,56 @@
 import AppText from "@/components/Common/AppText";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { Feather, MaterialIcons } from "@expo/vector-icons";
+import {
+  TextInput,
+  View,
+  Switch,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
+import AppTickPrice from "@/components/Common/AppTickPrice";
 import AppTickChange from "@/components/Common/AppTickChange";
 import AppTickChangePercent from "@/components/Common/AppTickChangePercent";
-import AppTickPrice from "@/components/Common/AppTickPrice";
-import useCalculation from "@/hooks/useCalculation";
-import { useAppSelector } from "@/redux/hook";
-import { FormatNumber } from "@/utils/Formatter";
-import { Feather, MaterialIcons } from "@expo/vector-icons";
-import { router } from "expo-router";
 import { useState } from "react";
-import { Switch, TextInput, TouchableOpacity, View } from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import useCalculation from "@/hooks/useCalculation";
+import { FormatNumber } from "@/utils/Formatter";
+import { tradeType, transactionType } from "@/types/OrderTypes";
+import { createOrder } from "@/redux/slices/OrderSlice";
 
 const SellScreen = () => {
+  const dispatch = useAppDispatch();
+  const { tokenId } = useLocalSearchParams();
   const { instrument } = useAppSelector((state) => state.instrument);
   const { profile } = useAppSelector((state) => state.auth);
   const [stoploss, setStoploss] = useState<boolean>(false);
+  const [limit, setLimit] = useState<number>(0);
+  const [triggerPrice, setTriggerPrice] = useState<number>(0);
   const [lotQuantity, setLotQuantity] = useState<number>(1);
+  const [transactionType, setTransactionType] =
+    useState<transactionType>("MARKET");
+  const [tradeType, setTradeType] = useState<tradeType>("MIS");
   const { margin, brokerage, totalAmount } = useCalculation({
     instrument,
     lotQuantity,
     profile,
   });
+
+  const handleBuyOrder = () => {
+    dispatch(
+      createOrder({
+        limit,
+        lotQuantity,
+        orderType: "SELL",
+        token: String(tokenId),
+        tradeType,
+        transactionType: stoploss ? "ST-L" : transactionType,
+        triggerPrice,
+      })
+    );
+
+    router.push("/");
+  };
 
   return (
     <View className="flex-1 justify-between flex-col gap-2">
@@ -56,7 +87,7 @@ const SellScreen = () => {
 
         <View className="px-2">
           <AppText
-            className="text-danger"
+            className="text-brand"
             textSize={14}
             style={{ fontFamily: "interBold" }}
           >
@@ -102,7 +133,7 @@ const SellScreen = () => {
               textSize={14}
               style={{ fontFamily: "interSemiBold" }}
             >
-              Market
+              {transactionType === "MARKET" ? "Market" : "Limit"}
             </AppText>
             <View className="px-2 py-2 border border-border flex-row items-center">
               <TextInput
@@ -111,15 +142,33 @@ const SellScreen = () => {
                 placeholderTextColor={"#A3A3B3"}
                 style={{ fontFamily: "interSemiBold" }}
                 keyboardType="number-pad"
+                editable={transactionType !== "MARKET"}
+                onChangeText={(value) =>
+                  value.length === 0 ? setLimit(0) : setLimit(Number(value))
+                }
               />
               <View className="px-2">
-                <MaterialIcons name="swap-horiz" size={26} color="#DF514D" />
+                <MaterialIcons
+                  name="swap-horiz"
+                  size={26}
+                  color="#538BE3"
+                  onPress={() =>
+                    setTransactionType(
+                      transactionType === "MARKET" ? "LIMIT" : "MARKET"
+                    )
+                  }
+                />
               </View>
             </View>
           </View>
           <View className="flex-row items-end justify-end gap-2 px-4">
-            <View className="flex-row gap-2 items-center">
-              <View className="h-4 w-4 rounded-full border border-border" />
+            <TouchableOpacity
+              className="flex-row gap-2 items-center"
+              onPress={() => setTradeType("MIS")}
+            >
+              <View
+                className={`h-4 w-4 rounded-full ${tradeType === "MIS" && "bg-danger"} border border-border`}
+              />
               <AppText
                 className="text-textPrimary"
                 textSize={16}
@@ -127,9 +176,14 @@ const SellScreen = () => {
               >
                 Intraday
               </AppText>
-            </View>
-            <View className="flex-row gap-2 items-center ">
-              <View className="h-4 w-4 rounded-full border border-danger bg-danger" />
+            </TouchableOpacity>
+            <Pressable
+              className="flex-row gap-2 items-center"
+              onPress={() => setTradeType("CNC")}
+            >
+              <View
+                className={`h-4 w-4 rounded-full ${tradeType === "CNC" && "bg-danger"} border border-border`}
+              />
               <AppText
                 className="text-textPrimary"
                 textSize={16}
@@ -137,7 +191,7 @@ const SellScreen = () => {
               >
                 Overnight
               </AppText>
-            </View>
+            </Pressable>
           </View>
         </View>
         <View className="bg-background flex-col gap-2 px-4 py-4 rounded-lg">
@@ -152,7 +206,7 @@ const SellScreen = () => {
             <Switch
               value={stoploss}
               onValueChange={() => setStoploss(!stoploss)}
-              thumbColor={stoploss ? "#DF514D" : "#EBECED"}
+              thumbColor={stoploss ? "#D16D69" : "#EBECED"}
             />
           </View>
           {stoploss && (
@@ -171,6 +225,11 @@ const SellScreen = () => {
                   placeholderTextColor={"#A3A3B3"}
                   style={{ fontFamily: "interSemiBold" }}
                   keyboardType="number-pad"
+                  onChangeText={(value) =>
+                    value.length === 0
+                      ? setTriggerPrice(0)
+                      : setTriggerPrice(Number(value))
+                  }
                 />
               </View>
             </View>
@@ -197,14 +256,18 @@ const SellScreen = () => {
               </AppText>
             </View>
           </View>
-          <Feather name="refresh-cw" size={14} color={"#DF514D"} />
+          <Feather name="refresh-cw" size={14} color={"#D16D69"} />
         </View>
         <View className="px-10 bg-background">
           <TouchableOpacity
             className="bg-buttonDanger items-center py-6 rounded-full disabled:bg-backgroundSecondary"
             disabled={
-              totalAmount > (profile === null ? 0 : profile?.availableFunds)
+              totalAmount > (profile === null ? 0 : profile?.availableFunds) ||
+              lotQuantity === 0 ||
+              (stoploss && triggerPrice === 0) ||
+              (transactionType === "LIMIT" && limit === 0)
             }
+            onPress={handleBuyOrder}
           >
             <AppText
               className="text-white"

@@ -4,10 +4,12 @@ import { MaterialIcons } from "@expo/vector-icons";
 import AppText from "@/components/Common/AppText";
 import { router } from "expo-router";
 import { FormatNumber } from "@/utils/Formatter";
-import { useAppSelector } from "@/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { logOut } from "@/redux/slices/AuthSlice";
 
 export default function ProfileScreen() {
   const { profile } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
   return (
     <View className="">
       {/* Profile card */}
@@ -86,6 +88,17 @@ export default function ProfileScreen() {
             size={24}
             color="#9CA3AF"
           />
+        </TouchableOpacity>
+
+        {/* Contact Support */}
+        <TouchableOpacity
+          className="flex-row items-center justify-between px-4 py-4 border-b border-border"
+          onPress={() => dispatch(logOut())}
+        >
+          <View className="flex-row items-center gap-4">
+            <MaterialIcons name="logout" size={20} color="#D16D69" />
+            <AppText className="text-danger">Logout</AppText>
+          </View>
         </TouchableOpacity>
       </View>
     </View>

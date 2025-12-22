@@ -7,7 +7,7 @@ export interface OrderResponse {
   orderType: orderType;
   orderStatus: orderStatus;
   tradeType: tradeType;
-  orderOption: transactionType;
+  transactionType: transactionType;
   symbol: string;
   quantity: number;
   exchangeSegment: string;

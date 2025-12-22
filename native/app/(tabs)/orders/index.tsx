@@ -1,15 +1,28 @@
 import AppText from "@/components/Common/AppText";
 import OrderItemContainer from "@/components/Container/OrderItemContainer";
 import { useAppSelector } from "@/redux/hook";
+import { OrderResponse } from "@/types/OrderTypes";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, Pressable, View } from "react-native";
 
 export default function OrderScreen() {
   const Tabs = ["Open", "Executed"];
   const [activeTab, setActivetab] = useState<string>("Executed");
   const { orders } = useAppSelector((state) => state.order);
+  const [activeOrders, setActiveOrder] = useState<
+    OrderResponse[] | null | undefined
+  >(null);
+
+  useEffect(() => {
+    const items = orders?.filter((item) =>
+      activeTab === "Executed"
+        ? item.orderStatus !== "PENDING"
+        : item.orderStatus === "PENDING"
+    );
+    setActiveOrder(items);
+  }, [activeTab, orders]);
 
   return (
     <View className="flex-1 py-4">
@@ -20,9 +33,9 @@ export default function OrderScreen() {
           return (
             <Pressable
               key={index}
-              onPress={() =>
-                setActivetab(activeTab === "Open" ? "Executed" : "Open")
-              }
+              onPress={() => {
+                setActivetab(activeTab === "Open" ? "Executed" : "Open");
+              }}
             >
               <AppText
                 className={`${active ? "text-brand" : "text-textMuted"}`}
@@ -56,7 +69,7 @@ export default function OrderScreen() {
 
         {/*  */}
         <FlatList
-          data={orders}
+          data={activeOrders}
           showsVerticalScrollIndicator={false}
           contentContainerClassName="px-6"
           renderItem={({ item }) => {

@@ -9,7 +9,7 @@ const OrderSchema = new mongoose.Schema(
     exchangeSegment: { type: String, required: true },
     instrumentType: { type: String },
     name: { type: String, required: true },
-    orderStatus: { type: String, required: true },
+    orderStatus: { type: String, required: true, },
     orderType: { type: String, required: true },
     price: { type: Number, required: true },
     quantity: { type: Number, required: true },

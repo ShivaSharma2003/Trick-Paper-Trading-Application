@@ -10,20 +10,20 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function Layout() {
   const dispatch = useAppDispatch();
   const { token } = useAppSelector((state) => state.auth);
-  const {orderStatus} = useAppSelector((state) => state.order)
+  const { orderStatus } = useAppSelector((state) => state.order);
 
   useEffect(() => {
     dispatch(loadAccount());
   }, [dispatch]);
 
   useEffect(() => {
-    if(!token) router.replace("/auth")
-  },[token])
+    if (!token) router.replace("/auth");
+  }, [token]);
 
   useEffect(() => {
     if (!token) return;
     dispatch(fetchUserProfile(String(token)));
-  }, [dispatch, token , orderStatus]);
+  }, [dispatch, token, orderStatus]);
 
   useEffect(() => {
     dispatch(fetchInstruments());

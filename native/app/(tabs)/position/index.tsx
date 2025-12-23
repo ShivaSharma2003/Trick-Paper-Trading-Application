@@ -1,14 +1,21 @@
 import AppText from "@/components/Common/AppText";
 import PositionItemContainer from "@/components/Container/PositionItemContainer";
 import { OrderData } from "@/data/OrdersData";
+import { useAppSelector } from "@/redux/hook";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, Pressable, View } from "react-native";
 
 export default function PositionScreen() {
   const Tabs = ["Holdings", "Positions"];
   const [activeTab, setActiveTab] = useState("Holdings");
+  const { positions } = useAppSelector((state) => state.position);
+
+  useEffect(() => {
+    console.log(positions);
+  }, [positions]);
+  
   return (
     <View className="flex-1 py-4">
       {/*  */}
@@ -53,9 +60,9 @@ export default function PositionScreen() {
           {/*  */}
           <View className="flex-row justify-between items-center border-b border-border py-4 px-6">
             <Feather name="search" size={18} color={"#538BE3"} />
-            <Pressable onPress={() => router.push("/tradebook")}>
+            <Pressable onPress={() => router.push("/statement")}>
               <AppText className="text-brand" textSize={14}>
-                Analytics
+                Statement
               </AppText>
             </Pressable>
           </View>

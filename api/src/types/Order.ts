@@ -2,7 +2,7 @@ import { Schema } from "mongoose";
 
 export type orderType = "BUY" | "SELL";
 type transactionType = "MARKET" | "LIMIT" | "ST-L";
-type tradeType = "MIS" | "CNC";
+export type tradeType = "MIS" | "CNC";
 type orderStatus = "PENDING"| "COMPLETED"| "CANCELLED"| "REJECTED";
 
 export interface OrderDTO {

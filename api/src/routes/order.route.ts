@@ -1,4 +1,5 @@
 import {
+  cancelOrder,
   createOrder,
   fetchOrderBook,
   fetchOrders,
@@ -11,4 +12,6 @@ const router = Router();
 router.get("/", authenticate, fetchOrders);
 router.get("/orderbook", authenticate, fetchOrderBook);
 router.post("/", authenticate, createOrder);
+router.put("/:orderId/", authenticate, cancelOrder);
+
 export default router;

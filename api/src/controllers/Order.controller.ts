@@ -2,6 +2,7 @@ import { OrderCreateEngine } from "@services/order.service";
 import OrderModel from "@models/orderModel";
 import { endOfDay, startOfDay } from "@util/date";
 import { initExecution } from "@services/execute.service";
+import expressAsyncHandler from "express-async-handler";
 
 export const createOrder = async (req, res) => {
   try {
@@ -56,7 +57,9 @@ export const fetchOrders = async (req, res) => {
 
 export const fetchOrderBook = async (req, res) => {
   try {
-    const orders = await OrderModel.find({ userId: req.user.id }).sort({
+    const orders = await OrderModel.find({
+      userId: req.user.id,
+    }).sort({
       createdAt: -1,
     });
 
@@ -66,5 +69,20 @@ export const fetchOrderBook = async (req, res) => {
     return res.status(200).json({ orders });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const cancelOrder = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const order = await OrderModel.findById(orderId);
+    if (!order && order.userId !== req.user.id)
+      return res.status(403).json({ message: "Bad Request" });
+    order.orderStatus = "CANCELLED";
+    await order.save();
+
+    res.status(200).json({ message: "Order Cancel" });
+  } catch (error) {
+    res.status(200).json({ message: "Internal Server Error" });
   }
 };

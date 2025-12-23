@@ -40,15 +40,22 @@ const TradebookContainer = ({ item }: TradebookContainerProps) => {
             {FormatTime(item?.createdAt)}
           </AppText>
         </View>
-        <View
-          className={`px-4 py-1 ${item?.orderType === "BUY" ? "bg-brandBg" : "bg-dangerBg"}`}
-        >
-          <AppText
-            className={`${item?.orderType === "BUY" ? "text-brand" : "text-danger"}`}
-            textSize={12}
+        <View className="flex-row items-center gap-4">
+          <View className="py-1 px-2 bg-backgroundSecondary">
+            <AppText className="text-textMuted" textSize={14}>
+              {item?.orderStatus}
+            </AppText>
+          </View>
+          <View
+            className={`px-4 py-1 ${item?.orderType === "BUY" ? "bg-brandBg" : "bg-dangerBg"}`}
           >
-            {item?.orderType}
-          </AppText>
+            <AppText
+              className={`${item?.orderType === "BUY" ? "text-brand" : "text-danger"}`}
+              textSize={12}
+            >
+              {item?.orderType}
+            </AppText>
+          </View>
         </View>
       </View>
     </View>

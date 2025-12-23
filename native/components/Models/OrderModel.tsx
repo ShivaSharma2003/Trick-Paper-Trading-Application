@@ -8,6 +8,8 @@ import { router } from "expo-router";
 import { Feather } from "@expo/vector-icons";
 import { OrderResponse } from "@/types/OrderTypes";
 import { FC } from "react";
+import { useAppDispatch } from "@/redux/hook";
+import { cancelOrder } from "@/redux/slices/OrderSlice";
 
 interface OrderModalProps {
   onClose: () => void;
@@ -15,6 +17,8 @@ interface OrderModalProps {
 }
 
 const OrderModel: FC<OrderModalProps> = ({ onClose, order }) => {
+  const dispatch = useAppDispatch();
+
   return (
     <AppModal onPress={onClose}>
       <Pressable className="flex-col gap-6 rounded-t-3xl bg-background pb-12 px-8 py-4">
@@ -52,7 +56,10 @@ const OrderModel: FC<OrderModalProps> = ({ onClose, order }) => {
             </AppText>
           </TouchableOpacity>
           {order?.orderStatus === "PENDING" && (
-            <TouchableOpacity className="flex-1 items-center justify-center flex-row rounded bg-buttonDanger py-4">
+            <TouchableOpacity
+              className="flex-1 items-center justify-center flex-row rounded bg-buttonDanger py-4"
+              onPress={() => dispatch(cancelOrder(order._id))}
+            >
               <AppText
                 className="text-white"
                 textSize={16}

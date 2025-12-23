@@ -37,11 +37,12 @@ const PositionModel: FC<PositionModelProps> = ({ onClose, position }) => {
         <View className="flex-row gap-4">
           <TouchableOpacity
             className="flex-1 items-center justify-center flex-row rounded bg-buttonPrimary py-4"
-            onPress={() =>
-              router.push(
-                `/order/${position?.token}/${position?.type.toLowerCase()}`
-              )
-            }
+            onPress={() => {
+              // eslint-disable-next-line no-unused-expressions
+              position?.type === "BUY"
+                ? router.push(`/order/${position?.token}/buy`)
+                : router.push(`/order/${position?.token}/sell`);
+            }}
           >
             <AppText
               className="text-white"
@@ -51,7 +52,15 @@ const PositionModel: FC<PositionModelProps> = ({ onClose, position }) => {
               ADD
             </AppText>
           </TouchableOpacity>
-          <TouchableOpacity className="flex-1 items-center justify-center flex-row rounded bg-buttonDanger py-4">
+          <TouchableOpacity
+            className="flex-1 items-center justify-center flex-row rounded bg-buttonDanger py-4"
+            onPress={() => {
+              // eslint-disable-next-line no-unused-expressions
+              position?.type === "BUY"
+                ? router.push(`/order/${position?.token}/sell`)
+                : router.push(`/order/${position?.token}/buy`);
+            }}
+          >
             <AppText
               className="text-white"
               textSize={16}

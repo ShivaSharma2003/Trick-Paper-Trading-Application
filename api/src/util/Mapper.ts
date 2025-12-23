@@ -13,7 +13,7 @@ export const ExchangeMapping = (segment: segment): number => {
     case "MCX":
       return 5;
     case "NCO":
-      return 7;
+      return 13;
     case "CDS":
       return 13;
   }

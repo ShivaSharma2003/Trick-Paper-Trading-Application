@@ -7,7 +7,7 @@ import { useAppSelector } from "@/redux/hook";
 import TradebookContainer from "@/components/Container/TradebookContainer";
 
 export default function TradeBookScreen() {
-  const { orders } = useAppSelector((state) => state.order);
+  const { orderBook } = useAppSelector((state) => state.order);
   return (
     <>
       {/* Header */}
@@ -53,7 +53,7 @@ export default function TradeBookScreen() {
             </AppText>
           </View>
         </View>
-        {orders?.length === 0 ? (
+        {orderBook?.length === 0 ? (
           <View className="flex-1 flex items-center justify-center gap-2">
             <Image
               source={require("@/assets/images/nodata.png")}
@@ -67,7 +67,7 @@ export default function TradeBookScreen() {
           <>
             {/* Orders Lists */}
             <FlatList
-              data={orders}
+              data={orderBook}
               showsVerticalScrollIndicator={false}
               keyExtractor={(item) => item._id}
               renderItem={({ item }) => {

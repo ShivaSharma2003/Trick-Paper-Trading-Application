@@ -8,6 +8,7 @@ interface OrderInitialState {
   error: string | null;
   orderStatus: boolean;
   orders: OrderResponse[] | null;
+  orderBook: OrderResponse[] | null;
   order: orderType | null;
 }
 
@@ -27,6 +28,7 @@ const initialState: OrderInitialState = {
   orderStatus: false,
   orders: null,
   order: null,
+  orderBook: null,
 };
 
 export const fetchOrders = createAsyncThunk(
@@ -80,6 +82,24 @@ export const createOrder = createAsyncThunk(
   }
 );
 
+export const cancelOrder = createAsyncThunk(
+  "cancel/order",
+  async (orderId: string, { rejectWithValue, getState }) => {
+    try {
+      const state = getState();
+      const { token } = (state as RootState).auth;
+      const { data } = await axiosInstance.put(
+        `/order/${orderId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 const orderSlice = createSlice({
   name: "orderSlice",
   initialState,
@@ -102,7 +122,7 @@ const orderSlice = createSlice({
       })
       .addCase(fetchOrderBook.fulfilled, (state, action) => {
         state.loading = false;
-        state.orders = action.payload;
+        state.orderBook = action.payload;
       })
       .addCase(fetchOrderBook.rejected, (state, action) => {
         state.loading = false;
@@ -121,6 +141,18 @@ const orderSlice = createSlice({
         state.loading = false;
         state.error = action.error as string;
         state.orderStatus = false;
+      })
+      .addCase(cancelOrder.pending, (state) => {
+        state.loading = true;
+        state.orderStatus = false;
+      })
+      .addCase(cancelOrder.fulfilled, (state) => {
+        state.loading = false;
+        state.orderStatus = true;
+      })
+      .addCase(cancelOrder.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error as string;
       });
   },
 });

@@ -39,7 +39,7 @@ export default function ProfileScreen() {
               size={20}
               color="#6B7280"
             />
-            <AppText>Funds</AppText>
+            <AppText textSize={14}>Funds</AppText>
           </View>
           <MaterialIcons
             name="keyboard-arrow-right"
@@ -55,7 +55,7 @@ export default function ProfileScreen() {
         >
           <View className="flex-row items-center gap-4">
             <MaterialIcons name="manage-accounts" size={20} color="#6B7280" />
-            <AppText>User Profile</AppText>
+            <AppText textSize={14}>User Profile</AppText>
           </View>
           <MaterialIcons
             name="keyboard-arrow-right"
@@ -68,7 +68,7 @@ export default function ProfileScreen() {
         <TouchableOpacity className="flex-row items-center justify-between px-4 py-4 border-b border-border">
           <View className="flex-row items-center gap-4">
             <MaterialIcons name="shield" size={20} color="#6B7280" />
-            <AppText>Privacy and Information</AppText>
+            <AppText textSize={14}>Privacy and Information</AppText>
           </View>
           <MaterialIcons
             name="keyboard-arrow-right"
@@ -81,7 +81,7 @@ export default function ProfileScreen() {
         <TouchableOpacity className="flex-row items-center justify-between px-4 py-4 border-b border-border">
           <View className="flex-row items-center gap-4">
             <MaterialIcons name="support-agent" size={20} color="#6B7280" />
-            <AppText>Contact Support</AppText>
+            <AppText textSize={14}>Contact Support</AppText>
           </View>
           <MaterialIcons
             name="keyboard-arrow-right"
@@ -97,7 +97,7 @@ export default function ProfileScreen() {
         >
           <View className="flex-row items-center gap-4">
             <MaterialIcons name="logout" size={20} color="#D16D69" />
-            <AppText className="text-danger">Logout</AppText>
+            <AppText className="text-danger" textSize={14}>Logout</AppText>
           </View>
         </TouchableOpacity>
       </View>

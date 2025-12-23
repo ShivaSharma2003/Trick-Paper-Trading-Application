@@ -7,12 +7,14 @@ interface positionInitialState {
   error: string | null;
   loading: boolean;
   positions: PositionResponse[] | null;
+  positionbook: PositionResponse[] | null
 }
 
 const initialState: positionInitialState = {
   error: null,
   loading: false,
   positions: null,
+  positionbook: null
 };
 
 export const fetchPositionStatement = createAsyncThunk(
@@ -68,11 +70,11 @@ const positionSlice = createSlice({
       })
       .addCase(fetchPositionStatement.pending, (state) => {
         state.loading = true;
-        state.positions = null;
+        state.positionbook = null;
       })
       .addCase(fetchPositionStatement.fulfilled, (state, action) => {
         state.loading = false;
-        state.positions = action.payload;
+        state.positionbook = action.payload;
       })
       .addCase(fetchPositionStatement.rejected, (state, action) => {
         state.loading = false;

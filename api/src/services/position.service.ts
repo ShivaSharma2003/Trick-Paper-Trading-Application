@@ -2,28 +2,81 @@ import PositionModel from "@models/positionModel";
 import userModel from "@models/userModel";
 import { PositionDTO, PositionParams } from "types/position";
 import { tickMap } from "./ticks.service";
+import { redis } from "@config/redis.config";
 
-export let positionMap = new Map<string, PositionDTO>();
+export const loadPositionsFromRedis = async () => {
+  const keys = await redis.keys("positions:*");
 
+  for (const key of keys) {
+    const data = await redis.hGetAll(key);
+    for (const token in data) {
+      const pos: PositionDTO = JSON.parse(data[token]);
+      // optional: warm in-memory cache
+    }
+  }
+
+  console.log("Positions restored from Redis");
+};
+
+loadPositionsFromRedis();
+
+/**
+ * Redis helpers
+ */
+const redisKey = (userId: string) => `positions:${userId}`;
+
+const savePosition = async (
+  userId: string,
+  token: string,
+  position: PositionDTO
+) => {
+  await redis.hSet(redisKey(userId), token, JSON.stringify(position));
+};
+
+const removePosition = async (userId: string, token: string) => {
+  await redis.hDel(redisKey(userId), token);
+};
+
+const getPosition = async (
+  userId: string,
+  token: string
+): Promise<PositionDTO | null> => {
+  const data = await redis.hGet(redisKey(userId), token);
+  return data ? JSON.parse(data) : null;
+};
+
+/**
+ * MAIN SERVICE
+ */
 export const positionService = async ({
   user,
   instrument,
   order,
 }: PositionParams) => {
   const tick = tickMap.get(order.token);
-  let margin: number =
-    ((Number(tick?.last_traded_price) / 100) *
-      (order.quantity / instrument.lotSize)) /
-    user.margin;
-  let brokerage: number =
-    ((Number(tick?.last_traded_price) / 100) *
-      (order.quantity / instrument.lotSize)) /
-    100;
-  let totalAmount: number = margin + brokerage;
-  if (!positionMap.has(`${user._id}:${instrument.token}`)) {
-    positionMap.set(`${user._id}:${instrument.token}`, {
-      userId: String(user._id),
-      token: instrument.token,
+  if (!tick) throw new Error("Tick not found");
+
+  const ltp = Number(tick.last_traded_price);
+
+  const margin =
+    ((ltp / 100) * (order.quantity / instrument.lotSize)) / user.margin;
+
+  const brokerage = ((ltp / 100) * (order.quantity / instrument.lotSize)) / 100;
+
+  const totalAmount = margin + brokerage;
+
+  const userId = String(user._id);
+  const token = instrument.token;
+
+  const existedPosition = await getPosition(userId, token);
+
+  /**
+   * NEW POSITION
+   */
+  if (!existedPosition) {
+    const position: PositionDTO = {
+      userId,
+      token,
       quantity: order.quantity,
       symbol: order.symbol,
       type: order.orderType,
@@ -34,109 +87,109 @@ export const positionService = async ({
       exitedAverage: null,
       status: "ACTIVE",
       tradeType: order.tradeType,
-    });
-    await userModel.findByIdAndUpdate(user._id, {
+      exchangeSegment: order.exchangeSegment,
+    };
+
+    await savePosition(userId, token, position);
+
+    await userModel.findByIdAndUpdate(userId, {
       $inc: { availableFunds: -totalAmount },
     });
-  } else {
-    const existedPosition = positionMap.get(`${user._id}:${instrument.token}`);
 
-    if (existedPosition?.type === order.orderType) {
-      existedPosition.quantity = existedPosition.quantity + order.quantity;
-      existedPosition.totalAmount =
-        existedPosition.totalAmount + order.price * order.quantity;
-      existedPosition.average =
-        existedPosition.totalAmount / existedPosition.quantity;
-      await userModel.findByIdAndUpdate(user._id, {
-        $inc: { availableFunds: -totalAmount },
-      });
-    } else {
-      if (existedPosition.quantity - order.quantity === 0) {
-        existedPosition.status = "EXITED";
-        existedPosition.exitedAt = new Date();
-        existedPosition.exitedAverage = order.price;
-        // Save this Position in DB or Redis
-        await PositionModel.create({
-          userId: existedPosition.userId,
-          token: existedPosition.token,
-          quantity: existedPosition.quantity,
-          symbol: existedPosition.symbol,
-          type: existedPosition.type,
-          createdAt: existedPosition.createdAt,
-          exitedAt: existedPosition.exitedAt,
-          average: existedPosition.average,
-          exitedAverage: existedPosition.exitedAverage,
-          status: existedPosition.status,
-          tradeType: existedPosition.tradeType,
-        });
-        await userModel.findByIdAndUpdate(user._id, {
-          $inc: {
-            availableFunds:
-              existedPosition.exitedAverage * existedPosition.quantity -
-              brokerage,
-          },
-        });
-      } else if (existedPosition.quantity - order.quantity < 0) {
-        const leftQty = order.quantity - existedPosition.quantity;
-
-        existedPosition.status = "EXITED";
-        existedPosition.exitedAt = new Date();
-        existedPosition.exitedAverage = order.price;
-        // Save this Position in DB or Redis
-        await PositionModel.create({
-          userId: existedPosition.userId,
-          token: existedPosition.token,
-          quantity: existedPosition.quantity,
-          symbol: existedPosition.symbol,
-          type: existedPosition.type,
-          createdAt: existedPosition.createdAt,
-          exitedAt: existedPosition.exitedAt,
-          average: existedPosition.average,
-          exitedAverage: existedPosition.exitedAverage,
-          status: existedPosition.status,
-          tradeType: existedPosition.tradeType,
-        });
-        await userModel.findByIdAndUpdate(user._id, {
-          $inc: {
-            availableFunds:
-              existedPosition.exitedAverage * existedPosition.quantity -
-              brokerage,
-          },
-        });
-
-        // Now New Positionw ill be created here
-        positionMap.set(`${user._id}:${instrument.token}`, {
-          userId: String(user._id),
-          token: instrument.token,
-          quantity: leftQty,
-          symbol: order.symbol,
-          type: order.orderType,
-          createdAt: new Date(),
-          exitedAt: null,
-          totalAmount: order.price * leftQty,
-          average: order.price,
-          exitedAverage: null,
-          status: "ACTIVE",
-          tradeType: order.tradeType,
-        });
-        await userModel.findByIdAndUpdate(user._id, {
-          $inc: {
-            availableFunds: -(order.price * leftQty - brokerage),
-          },
-        });
-      } else {
-        existedPosition.quantity = existedPosition.quantity - order.quantity;
-        existedPosition.totalAmount =
-          existedPosition.totalAmount - order.price * order.quantity;
-        existedPosition.average =
-          existedPosition.totalAmount / existedPosition.quantity;
-
-        await userModel.findByIdAndUpdate(user._id, {
-          $inc: {
-            availableFunds: order.price * order.quantity - brokerage,
-          },
-        });
-      }
-    }
+    return;
   }
+
+  /**
+   * SAME SIDE (BUY+BUY or SELL+SELL)
+   */
+  if (existedPosition.type === order.orderType) {
+    existedPosition.totalAmount += order.price * order.quantity;
+    existedPosition.quantity += order.quantity;
+    existedPosition.average =
+      existedPosition.totalAmount / existedPosition.quantity;
+
+    await savePosition(userId, token, existedPosition);
+
+    await userModel.findByIdAndUpdate(userId, {
+      $inc: { availableFunds: -totalAmount },
+    });
+
+    return;
+  }
+
+  /**
+   * OPPOSITE SIDE (EXIT / PARTIAL / REVERSE)
+   */
+  const netQty = existedPosition.quantity - order.quantity;
+
+  // FULL EXIT
+  if (netQty === 0) {
+    existedPosition.status = "EXITED";
+    existedPosition.exitedAt = new Date();
+    existedPosition.exitedAverage = order.price;
+
+    await PositionModel.create(existedPosition);
+    await removePosition(userId, token);
+
+    await userModel.findByIdAndUpdate(userId, {
+      $inc: {
+        availableFunds:
+          existedPosition.exitedAverage * existedPosition.quantity - brokerage,
+      },
+    });
+
+    return;
+  }
+
+  // REVERSE POSITION
+  if (netQty < 0) {
+    const leftQty = Math.abs(netQty);
+
+    existedPosition.status = "EXITED";
+    existedPosition.exitedAt = new Date();
+    existedPosition.exitedAverage = order.price;
+
+    await PositionModel.create(existedPosition);
+    await removePosition(userId, token);
+
+    const newPosition: PositionDTO = {
+      userId,
+      token,
+      quantity: leftQty,
+      symbol: order.symbol,
+      type: order.orderType,
+      createdAt: new Date(),
+      exitedAt: null,
+      totalAmount: order.price * leftQty,
+      average: order.price,
+      exitedAverage: null,
+      status: "ACTIVE",
+      tradeType: order.tradeType,
+      exchangeSegment: order.exchangeSegment,
+    };
+
+    await savePosition(userId, token, newPosition);
+
+    await userModel.findByIdAndUpdate(userId, {
+      $inc: {
+        availableFunds: -(order.price * leftQty - brokerage),
+      },
+    });
+
+    return;
+  }
+
+  // PARTIAL EXIT
+  existedPosition.quantity = netQty;
+  existedPosition.totalAmount -= order.price * order.quantity;
+  existedPosition.average =
+    existedPosition.totalAmount / existedPosition.quantity;
+
+  await savePosition(userId, token, existedPosition);
+
+  await userModel.findByIdAndUpdate(userId, {
+    $inc: {
+      availableFunds: order.price * order.quantity - brokerage,
+    },
+  });
 };

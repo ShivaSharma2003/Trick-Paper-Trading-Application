@@ -1,10 +1,12 @@
-import { OrderResponse } from "@/types/OrderTypes";
+import { PositionResponse } from "@/types/PositionType";
 import { FC } from "react";
 import { View } from "react-native";
 import AppText from "../Common/AppText";
+import AppTickPrice from "../Common/AppTickPrice";
+import { FormatNumber } from "@/utils/Formatter";
 
 interface PositionItemContainerProps {
-  item: OrderResponse;
+  item: PositionResponse;
 }
 const PositionItemContainer: FC<PositionItemContainerProps> = ({ item }) => {
   return (
@@ -18,10 +20,15 @@ const PositionItemContainer: FC<PositionItemContainerProps> = ({ item }) => {
           </View>
           <View className="flex-row gap-1">
             <AppText className="text-textMuted">Avg.</AppText>
-            <AppText className="text-textSecondary">{item.average}</AppText>
+            <AppText className="text-textSecondary">
+              {FormatNumber(item.average)}
+            </AppText>
           </View>
         </View>
         <View className="flex flex-row gap-2 items-center">
+          <View className="px-2 py-1 bg-backgroundSecondary">
+            <AppText className="text-textSecondary">{item.status}</AppText>
+          </View>
           <View className="px-2 py-1 bg-backgroundSecondary">
             <AppText className="text-textSecondary">{item.tradeType}</AppText>
           </View>
@@ -41,15 +48,13 @@ const PositionItemContainer: FC<PositionItemContainerProps> = ({ item }) => {
       {/*  */}
       <View className="flex-row items-center justify-between">
         <AppText className="text-textMuted" textSize={12}>
-          {item.exchangeType}
+          {item.exchangeSegment}
         </AppText>
         <View className="flex-row itesm-center gap-2">
           <AppText className="text-textMuted" textSize={12}>
             LTP
           </AppText>
-          <AppText className="text-textSecondary" textSize={12}>
-            {item.average}
-          </AppText>
+          <AppTickPrice item={item} className="text-textMuted" />
         </View>
       </View>
     </View>

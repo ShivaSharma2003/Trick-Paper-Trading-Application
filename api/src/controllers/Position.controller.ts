@@ -1,15 +1,24 @@
+import { redis } from "@config/redis.config";
 import PositionModel from "@models/positionModel";
-import { positionMap } from "@services/position.service";
 
-export const fetchPositions = (req, res) => {
+export const fetchPositions = async (req, res) => {
   try {
-    const positions = positionMap.get(`${req.user.id}`);
-    console.log(positions)
-    if (!positions) return res.status(404).json({ message: "Position not found" });
+    const userId = req.user.id;
 
-    return res.status(200).json({ positions });
+    const redisKey = `positions:${userId}`;
+    const data = await redis.hGetAll(redisKey);
+
+    if (!data || Object.keys(data).length === 0) {
+      return res.status(200).json({ positions: [] });
+    }
+
+    const positionsArray = Object.values(data)
+      .filter((item): item is string => typeof item === "string")
+      .map((item) => JSON.parse(item));
+
+    return res.status(200).json({ positions: positionsArray });
   } catch (error) {
-    console.log(error)
+    console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };

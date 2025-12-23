@@ -1,4 +1,4 @@
-import {  Types } from "mongoose";
+import { Types } from "mongoose";
 import { InstrumentDTO } from "./Instrument";
 import { OrderDTO, orderType, tradeType } from "./Order";
 import { UserDTO } from "./User";
@@ -24,4 +24,5 @@ export interface PositionDTO {
   exitedAverage: number | null;
   status: positionStatus;
   tradeType: tradeType;
+  exchangeSegment: string;
 }

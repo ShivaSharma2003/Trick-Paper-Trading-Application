@@ -15,4 +15,5 @@ export interface PositionResponse {
   exitedAverage: number | null;
   status: positionStatus;
   tradeType: tradeType;
+  exchangeSegment: string;
 }

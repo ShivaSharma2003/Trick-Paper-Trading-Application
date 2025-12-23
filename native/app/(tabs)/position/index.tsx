@@ -1,21 +1,22 @@
 import AppText from "@/components/Common/AppText";
 import PositionItemContainer from "@/components/Container/PositionItemContainer";
-import { OrderData } from "@/data/OrdersData";
-import { useAppSelector } from "@/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { fetchPositions } from "@/redux/slices/PositionSlice";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FlatList, Pressable, View } from "react-native";
 
 export default function PositionScreen() {
+  const dispatch = useAppDispatch();
   const Tabs = ["Holdings", "Positions"];
   const [activeTab, setActiveTab] = useState("Holdings");
   const { positions } = useAppSelector((state) => state.position);
 
   useEffect(() => {
-    console.log(positions);
-  }, [positions]);
-  
+    dispatch(fetchPositions());
+  },[dispatch]);
+
   return (
     <View className="flex-1 py-4">
       {/*  */}
@@ -69,7 +70,7 @@ export default function PositionScreen() {
 
           {/*  */}
           <FlatList
-            data={OrderData}
+            data={positions}
             showsVerticalScrollIndicator={false}
             contentContainerClassName="px-6"
             renderItem={({ item }) => {

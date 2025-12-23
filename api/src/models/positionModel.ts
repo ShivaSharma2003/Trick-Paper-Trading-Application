@@ -16,6 +16,7 @@ const PositionSchema = new mongoose.Schema(
     exitedAverage: { type: Number, required: true },
     status: { type: String, requried: true },
     tradeType: { type: String, required: true },
+    exchangeSegment: { type: String, required: true },
   },
   { timeStamps: true }
 );

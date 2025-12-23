@@ -11,7 +11,11 @@ interface AppTickPriceProps {
   item: InstrumentResponse | AppHeaderInstruments | null;
 }
 
-export default function AppTickPrice({ textSize, item }: AppTickPriceProps) {
+export default function AppTickPrice({
+  textSize,
+  item,
+  className,
+}: AppTickPriceProps) {
   const { tick } = useSocketTick();
   const data = useMemo(
     () => (item === null ? {} : tick[item?.token]),
@@ -20,7 +24,7 @@ export default function AppTickPrice({ textSize, item }: AppTickPriceProps) {
   const change = Number(data?.last_traded_price) - Number(data?.open_price_day);
   return (
     <AppText
-      className={`${change > 0 ? "text-sucess" : change === 0 ? "text-textPrimary" : "text-danger"}`}
+      className={`${change > 0 ? "text-sucess" : change === 0 ? "text-textPrimary" : "text-danger"} ${className}`}
       textSize={textSize}
     >
       {FormatNumber(data?.last_traded_price / 100)}

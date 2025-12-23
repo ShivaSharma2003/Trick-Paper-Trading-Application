@@ -9,6 +9,6 @@ export default function OrdersLayout() {
 
   useEffect(() => {
     dispatch(fetchOrders());
-  }, [orderStatus]);
+  }, [dispatch, orderStatus]);
   return <Slot />;
 }

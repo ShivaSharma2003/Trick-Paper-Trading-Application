@@ -8,7 +8,7 @@ import { PositionResponse } from "@/types/PositionType";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { FlatList, Modal, Pressable, View } from "react-native";
+import { FlatList, Image, Modal, Pressable, View } from "react-native";
 
 export default function PositionScreen() {
   const dispatch = useAppDispatch();
@@ -71,20 +71,31 @@ export default function PositionScreen() {
             </Pressable>
           </View>
 
-          {/*  */}
-          <FlatList
-            data={positions}
-            showsVerticalScrollIndicator={false}
-            contentContainerClassName="px-6"
-            renderItem={({ item }) => {
-              return (
-                <PositionItemContainer
-                  item={item}
-                  onSelect={() => setSelectedPosition(item)}
-                />
-              );
-            }}
-          />
+          {positions?.length === 0 ? (
+            <View className="flex-1 flex items-center justify-center gap-2">
+              <Image
+                source={require("@/assets/images/nodata.png")}
+                className="h-32 w-32"
+              />
+              <AppText className="text-textMuted" textSize={16}>
+                Positions are empty!!!
+              </AppText>
+            </View>
+          ) : (
+            <FlatList
+              data={positions}
+              showsVerticalScrollIndicator={false}
+              contentContainerClassName="px-6"
+              renderItem={({ item }) => {
+                return (
+                  <PositionItemContainer
+                    item={item}
+                    onSelect={() => setSelectedPosition(item)}
+                  />
+                );
+              }}
+            />
+          )}
         </View>
       </View>
 

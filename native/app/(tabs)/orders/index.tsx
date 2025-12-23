@@ -6,8 +6,7 @@ import { OrderResponse } from "@/types/OrderTypes";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Modal } from "react-native";
-import { FlatList, Pressable, View } from "react-native";
+import { FlatList, Pressable, View, Modal, Image } from "react-native";
 
 export default function OrderScreen() {
   const Tabs = ["Open", "Executed"];
@@ -72,20 +71,31 @@ export default function OrderScreen() {
           </Pressable>
         </View>
 
-        {/*  */}
-        <FlatList
-          data={activeOrders}
-          showsVerticalScrollIndicator={false}
-          contentContainerClassName="px-6"
-          renderItem={({ item }) => {
-            return (
-              <OrderItemContainer
-                item={item ?? []}
-                onSelect={() => setSelectedOrder(item)}
-              />
-            );
-          }}
-        />
+        {activeOrders?.length === 0 ? (
+          <View className="flex-1 flex items-center justify-center gap-2">
+            <Image
+              source={require("@/assets/images/nodata.png")}
+              className="h-32 w-32"
+            />
+            <AppText className="text-textMuted" textSize={16}>
+              Orders are empty!!!
+            </AppText>
+          </View>
+        ) : (
+          <FlatList
+            data={activeOrders}
+            showsVerticalScrollIndicator={false}
+            contentContainerClassName="px-6"
+            renderItem={({ item }) => {
+              return (
+                <OrderItemContainer
+                  item={item ?? []}
+                  onSelect={() => setSelectedOrder(item)}
+                />
+              );
+            }}
+          />
+        )}
       </View>
       <Modal
         visible={!!selectedOrder}

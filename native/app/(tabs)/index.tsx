@@ -7,7 +7,7 @@ import { InstrumentResponse } from "@/types/InstrumentTypes";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, Modal, Pressable, View } from "react-native";
+import { FlatList, Image, Modal, Pressable, View } from "react-native";
 
 const HomeScreen = () => {
   const [activeWatchlist, setActiveWatchlist] = useState(1);
@@ -21,7 +21,6 @@ const HomeScreen = () => {
     dispatch(loadwatchlisted());
   }, [dispatch]);
 
-  
   return (
     <View className="flex-1">
       <View>
@@ -70,20 +69,32 @@ const HomeScreen = () => {
         </Pressable>
 
         {/*  */}
-        <View>
-          <FlatList
-            data={watchlists}
-            keyExtractor={(item) => item.token}
-            renderItem={({ item }) => {
-              return (
-                <WatchlistItemContainer
-                  item={item}
-                  onSelect={() => setSelectedInstrument(item)}
-                />
-              );
-            }}
-          />
-        </View>
+        {watchlists.length === 0 ? (
+          <View className="flex-1 flex items-center justify-center gap-2">
+            <Image
+              source={require("@/assets/images/nodata.png")}
+              className="h-32 w-32"
+            />
+            <AppText className="text-textMuted" textSize={16}>
+              Watchlists are empty!!!
+            </AppText>
+          </View>
+        ) : (
+          <View>
+            <FlatList
+              data={watchlists}
+              keyExtractor={(item) => item.token}
+              renderItem={({ item }) => {
+                return (
+                  <WatchlistItemContainer
+                    item={item}
+                    onSelect={() => setSelectedInstrument(item)}
+                  />
+                );
+              }}
+            />
+          </View>
+        )}
       </View>
       <Modal
         visible={!!selectedInstrument}

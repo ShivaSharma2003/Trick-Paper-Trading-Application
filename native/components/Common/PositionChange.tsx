@@ -24,7 +24,7 @@ export default function PositionChange({
     const avg = Number(position.average);
     const qty = Number(position.quantity);
 
-    return (ltp - avg) * qty;
+    return position.type === "BUY" ? (ltp - avg) * qty : (avg - ltp) * qty;
   }, [item?.last_traded_price, position, tick]);
 
   return (

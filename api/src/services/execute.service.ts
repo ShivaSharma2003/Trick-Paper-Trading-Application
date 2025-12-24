@@ -1,4 +1,4 @@
-import { InstrumentDTO } from "types/Instrument";
+import { InstrumentDTO } from "types/instrument";
 import { OrderDTO, OrderEngineParams } from "../types/Order";
 import { UserDTO } from "types/User";
 import OrderModel from "@models/orderModel";

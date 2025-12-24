@@ -5,13 +5,12 @@ import { tickMap } from "./ticks.service";
 import { redis } from "@config/redis.config";
 
 export const loadPositionsFromRedis = async () => {
-  const keys = await redis.keys("positions:*");
+  const keys = await redis.keys("trick:positions:*");
 
   for (const key of keys) {
     const data = await redis.hGetAll(key);
     for (const token in data) {
       const pos: PositionDTO = JSON.parse(data[token]);
-      // optional: warm in-memory cache
     }
   }
 
@@ -23,7 +22,7 @@ loadPositionsFromRedis();
 /**
  * Redis helpers
  */
-const redisKey = (userId: string) => `positions:${userId}`;
+const redisKey = (userId: string) => `trick:positions:${userId}`;
 
 const savePosition = async (
   userId: string,

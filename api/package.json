@@ -7,7 +7,7 @@
     "setup": "npm install && npm update",
     "tsc": "tsc",
     "build": "npm run tsc",
-    "start": "ts-node-dev --transpileOnly ./src/server.ts",
+    "start": "ts-node-dev ./src/server.ts",
     "dev": "ts-node-dev ./src/server.ts",
     "prod": "tsc && node ./build/src/server.js"
   },
@@ -63,7 +63,8 @@
     "@data": "src/data",
     "@helpers": "src/helpers",
     "@core": "src/core",
-    "@middleware": "src/middleware"
+    "@middleware": "src/middleware",
+    "@types": "src/types"
   },
   "devDependencies": {
     "@types/node": "^25.0.2"

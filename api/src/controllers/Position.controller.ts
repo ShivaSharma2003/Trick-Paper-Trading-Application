@@ -5,7 +5,7 @@ export const fetchPositions = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const redisKey = `positions:${userId}`;
+    const redisKey = `trick:positions:${userId}`;
     const data = await redis.hGetAll(redisKey);
 
     if (!data || Object.keys(data).length === 0) {
@@ -15,7 +15,6 @@ export const fetchPositions = async (req, res) => {
     const positionsArray = Object.values(data)
       .filter((item): item is string => typeof item === "string")
       .map((item) => JSON.parse(item));
-
     return res.status(200).json({ positions: positionsArray });
   } catch (error) {
     console.error(error);

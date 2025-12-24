@@ -99,14 +99,14 @@ const subscribeInstrument = (ws, tokenMap) => {
 };
 
 const saveToken = async ({ token, exchangeType }: payload) => {
-  return await redis.hSet(`tokenMap:${token}`, {
+  return await redis.hSet(`trick:tokenMap:${token}`, {
     token,
     exchangeType,
   });
 };
 
 const loadTokenMap = async () => {
-  const keys = await redis.keys("tokenMap:*");
+  const keys = await redis.keys("trick:tokenMap:*");
   const map = new Map();
 
   for (const key of keys) {

@@ -1,5 +1,5 @@
 import { redis } from "@config/redis.config";
-import { InstrumentDTO, RawInstruments } from "types/Instrument";
+import { InstrumentDTO, RawInstruments } from "types/instrument";
 import InstrumentModel from "@models/instrumentModel";
 import axios from "axios";
 
@@ -10,9 +10,8 @@ export const storeInstrument = async () => {
     console.log(`${instruments.length} instruments fetched`);
     await InstrumentModel.deleteMany({});
     console.log("Inserted Instruments deleted ...");
-    let count = 0;
     for (const item of instruments) {
-      await redis.hSet("instruments", item.token, JSON.stringify(item));
+      await redis.hSet("trick:instruments", item.token, JSON.stringify(item));
       await InstrumentModel.create({
         token: item.token,
         exchangeSegment: item.exchangeSegment,
@@ -22,9 +21,8 @@ export const storeInstrument = async () => {
         name: item.name,
         expiry: item.expiry,
       });
-      count++;
     }
-    console.log(`${count} instrument fetched and inserted...`);
+    console.log("fetched and store instruments successfully...")
   } catch (error) {
     console.log(error);
     console.log("Error Storing Redis Instruments... ");

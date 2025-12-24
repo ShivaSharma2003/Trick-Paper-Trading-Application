@@ -47,7 +47,6 @@ export const fetchOrders = async (req, res) => {
     }).sort({
       createdAt: -1,
     });
-
     if (!orders) return res.status(404).json({ message: "Orders not found" });
     return res.status(200).json({ orders });
   } catch (error) {

@@ -1,4 +1,4 @@
-import { InstrumentDTO } from "types/Instrument";
+import { InstrumentDTO } from "types/instrument";
 import { Model } from "mongoose";
 const mongoose = require("mongoose");
 

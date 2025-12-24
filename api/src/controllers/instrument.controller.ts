@@ -1,9 +1,9 @@
 import { redis } from "@config/redis.config";
-import { InstrumentDTO } from "types/Instrument";
+import { InstrumentDTO } from "types/instrument";
 
 export const fetchInstruments = async (req, res) => {
   try {
-    const data = await redis.hGetAll("instruments");
+    const data = await redis.hGetAll("trick:instruments");
     if (!data) {
       return res.status(404).json({ message: "Instrument not found" });
     }
@@ -22,7 +22,7 @@ export const fetchInstrumentById = async (req, res) => {
     const { tokenId }: { tokenId: string } = req.params;
     if (!tokenId) return res.status(403).json({ message: "bad Request" });
 
-    const data = await redis.hGet("instruments", tokenId);
+    const data = await redis.hGet("trick:instruments", tokenId);
     if (!data) return res.status(404).json({ message: "Instrument not found" });
     return res.status(200).json({ instrument: JSON.parse(String(data)) });
   } catch (error) {

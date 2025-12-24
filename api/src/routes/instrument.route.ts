@@ -1,7 +1,7 @@
 import {
   fetchInstrumentById,
   fetchInstruments,
-} from "@controllers/Instrument.controller";
+} from "@controllers/instrument.controller";
 import { Router } from "express";
 
 const router = Router();

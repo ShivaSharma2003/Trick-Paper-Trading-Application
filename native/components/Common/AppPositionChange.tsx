@@ -27,7 +27,9 @@ export default function AppPositionChange({
       const avg = Number(position.average);
       const qty = Number(position.quantity);
 
-      return sum + position.type === "BUY" ? (ltp - avg) * qty : (avg - ltp) * qty;
+      return (
+        sum + (position.type === "BUY" ? (ltp - avg) * qty : (avg - ltp) * qty)
+      );
     }, 0);
   }, [positions, tick]);
 

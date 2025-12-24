@@ -21,11 +21,13 @@ export default function AppTickChangePercent({
     () => (item === null ? {} : tick[item?.token]),
     [item, tick]
   );
-  const changePercent =
-    (Number(data?.last_traded_price) - Number(data?.open_price_day)) / 100;
+  const open = Number(data?.open_price_day);
+  const ltp = Number(data?.last_traded_price);
+
+  const changePercent = open > 0 ? ((ltp - open) / open) * 100 : 0;
   return (
     <AppText className={`${className}`} textSize={textSize}>
-      ({FormatNumber(changePercent / 100)})%
+      ({FormatNumber(changePercent)})%
     </AppText>
   );
 }

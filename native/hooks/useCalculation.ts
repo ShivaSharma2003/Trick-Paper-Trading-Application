@@ -22,10 +22,10 @@ const useCalculation = ({
   const { tick } = useSocketTick();
   const item = instrument === null ? {} : tick[instrument.token];
   const margin =
-    ((Number(item?.last_traded_price) / 100) * lotQuantity) /
+    ((Number(item?.last_traded_price) / 100) * (lotQuantity * (instrument?.lotSize ?? 0))) /
     (profile === null ? 1 : profile.margin);
   const brokerage =
-    ((Number(item?.last_traded_price) / 100) * lotQuantity) / 100;
+    ((Number(item?.last_traded_price) / 100) * (lotQuantity * (instrument?.lotSize ?? 0))) / 100;
 
   const totalAmount = margin + brokerage;
 

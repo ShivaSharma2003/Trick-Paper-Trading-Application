@@ -11,7 +11,7 @@ import {
 import AppTickPrice from "@/components/Common/AppTickPrice";
 import AppTickChange from "@/components/Common/AppTickChange";
 import AppTickChangePercent from "@/components/Common/AppTickChangePercent";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import useCalculation from "@/hooks/useCalculation";
 import { FormatNumber } from "@/utils/Formatter";

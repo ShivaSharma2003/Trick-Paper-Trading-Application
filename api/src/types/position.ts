@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { InstrumentDTO } from "./Instrument";
+import { InstrumentDTO } from "./instrument";
 import { OrderDTO, orderType, tradeType } from "./Order";
 import { UserDTO } from "./User";
 

@@ -5,10 +5,8 @@ import AppText from "./AppText";
 import AppTickPrice from "./AppTickPrice";
 import AppTickChange from "./AppTickChange";
 import AppTickChangePercent from "./AppTickChangePercent";
-import useSocketTick from "@/hooks/useSocketTicks";
 
 const AppHeader = () => {
-  const { tick } = useSocketTick();
   return (
     <View className="flex flex-row gap-4 px-4 py-2">
       <View className="flex-1 flex-row gap-2">
@@ -23,17 +21,15 @@ const AppHeader = () => {
                   {item.symbol}
                 </AppText>
                 <View className="flex-row gap-2 items-center">
-                  <AppTickPrice item={item} tick={tick} />
+                  <AppTickPrice item={item} />
                   <View className="flex-row gap-2">
                     <AppTickChange
                       item={item}
-                      tick={tick}
-                      className="text-textMuted"
+                      className="text-textSecondary"
                     />
                     <AppTickChangePercent
                       item={item}
-                      tick={tick}
-                      className="text-textMuted"
+                      className="text-textSecondary"
                     />
                   </View>
                 </View>

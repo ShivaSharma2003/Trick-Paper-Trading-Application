@@ -1,6 +1,7 @@
-import { InstrumentResponse } from "@/types/InstrumentTypes";
+import { futures, InstrumentResponse, options } from "@/types/InstrumentTypes";
 import { UserResponse } from "@/types/UserTypes";
 import useSocketTick from "./useSocketTicks";
+import { useAppSelector } from "@/redux/hook";
 
 interface useCalculationParameters {
   instrument: InstrumentResponse | null;
@@ -14,15 +15,20 @@ interface useCalculationReturnType {
   totalAmount: number;
 }
 
-const OPTION_SEGMENTS = new Set(["OPTIDX", "OPTSTK", "OPTFUT"]);
-const FUTURE_SEGMENTS = new Set(["FUTIDX", "FUTSTK", "FUTCOM"]);
-
 const useCalculation = ({
   instrument,
   profile,
   lotQuantity,
 }: useCalculationParameters): useCalculationReturnType => {
   const { tick } = useSocketTick();
+
+  const { positions } = useAppSelector((state) => state.position);
+  const existingPosition = positions?.find(
+    (item) => item.token === instrument?.token
+  );
+  const isExit =
+    existingPosition &&
+    existingPosition.quantity === lotQuantity * (instrument?.lotSize ?? 0);
 
   if (!instrument || !profile) {
     return { margin: 0, brokerage: 0, totalAmount: 0 };
@@ -34,15 +40,16 @@ const useCalculation = ({
   let margin = 0;
   let brokerage = 0;
 
-  if (OPTION_SEGMENTS.has(instrument.instrumentType)) {
-    margin =
-      ((ltp / 100) * (lotQuantity * instrument.lotSize)) / profile.optMargin;
+  if (options.has(instrument.instrumentType)) {
+    margin = isExit
+      ? 0
+      : ((ltp / 100) * (lotQuantity * instrument.lotSize)) / profile.optMargin;
 
     brokerage = lotQuantity * profile.optBrokerage;
   }
 
-  if (FUTURE_SEGMENTS.has(instrument.instrumentType)) {
-    margin = profile.futMargin * lotQuantity;
+  if (futures.has(instrument.instrumentType)) {
+    margin = isExit ? 0 : profile.futMargin * lotQuantity;
     brokerage = lotQuantity * profile.futBrokerage;
   }
 

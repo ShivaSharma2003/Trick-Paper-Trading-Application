@@ -21,3 +21,6 @@ export interface RawInstruments {
   tick_size: string;
   strike: string;
 }
+
+export const options = new Set(["OPTFUT", "OPTIDX", "OPTSTK"]);
+export const futures = new Set(["FUTCOM", "FUTIDX", "FUTSTK"]);

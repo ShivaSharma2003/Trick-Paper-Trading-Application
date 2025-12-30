@@ -3,7 +3,7 @@ import { InstrumentDTO, RawInstruments } from "types/instrument";
 import InstrumentModel from "@models/instrumentModel";
 import axios from "axios";
 
-const ALLOWED_SEGMENTS = new Set(["NFO", "BFO", "MCX"]);
+const ALLOWED_SEGMENTS = new Set(["OPTSTK", "OPTIDX", "OPTFUT" , "FUTCOM" , "FUTSTK" , "FUTIDX"]);
 
 export const storeInstrument = async () => {
   try {
@@ -12,7 +12,7 @@ export const storeInstrument = async () => {
     const instruments = await fetchInstruments();
 
     const filtered = instruments.filter((item) =>
-      ALLOWED_SEGMENTS.has(item.exchangeSegment)
+      ALLOWED_SEGMENTS.has(item.instrumentType)
     );
 
     console.log(`${filtered.length} instruments after filtering`);

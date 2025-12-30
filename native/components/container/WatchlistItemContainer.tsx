@@ -27,14 +27,14 @@ const WatchlistItemContainer: FC<WatchlistItemContainerProps> = ({
         <AppTickPrice item={item} textSize={14} />
       </View>
       <View className="flex-row item-center justify-between">
-        <AppText className="text-textMuted" textSize={13}>
+        <AppText className="text-textSecondary" textSize={13}>
           {item.exchangeSegment}
         </AppText>
         <View className="flex-row gap-2 items-center">
-          <AppTickChange item={item} className="text-textMuted" textSize={13} />
+          <AppTickChange item={item} className="text-textSecondary" textSize={13} />
           <AppTickChangePercent
             item={item}
-            className="text-textMuted"
+            className="text-textSecondary"
             textSize={13}
           />
         </View>

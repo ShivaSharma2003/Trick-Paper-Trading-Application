@@ -62,10 +62,10 @@ const PositionItemContainer: FC<PositionItemContainerProps> = ({
           </AppText>
         </View>
         <View className="flex-row itesm-center gap-2">
-          <AppText className="text-textMuted" textSize={12}>
+          <AppText className="text-textSecondary" textSize={12}>
             LTP
           </AppText>
-          <AppTickPrice item={item} className="text-textMuted" />
+          <AppTickPrice item={item} className="text-textSecondary" />
         </View>
       </View>
     </TouchableOpacity>

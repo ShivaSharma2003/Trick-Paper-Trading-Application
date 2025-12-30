@@ -10,7 +10,6 @@ import { positionService } from "./position.service";
 export const initExecution = async (order: OrderDTO) => {
   try {
     const tick = tickMap[order.token];
-    console.log(tick)
     const user: UserDTO = await userModel.findById(order.userId);
     const instrument: InstrumentDTO = await InstrumentModel.findOne({
       token: order.token,

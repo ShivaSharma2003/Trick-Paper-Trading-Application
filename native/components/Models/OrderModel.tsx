@@ -73,7 +73,10 @@ const OrderModel: FC<OrderModalProps> = ({ onClose, order }) => {
 
         {/* 3 row */}
         <View className="flex-row items-center justify-between">
-          <TouchableOpacity className="flex-row gap-2 items-center justify-cemter">
+          <TouchableOpacity
+            className="flex-row gap-2 items-center justify-cemter"
+            onPress={() => router.push(`/chart/${order?.token}`)}
+          >
             <Feather name="bar-chart" color={"#538BE3"} size={14} />
             <AppText className="text-brand" textSize={14}>
               View Chart

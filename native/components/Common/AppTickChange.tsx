@@ -21,7 +21,10 @@ export default function AppTickChange({
     () => (item === null ? {} : tick[item?.token]),
     [item, tick]
   );
-  const change = Number(data?.last_traded_price) - Number(data?.open_price_day);
+  const open = Number(data?.open_price_day);
+  const ltp = Number(data?.last_traded_price);
+
+  const change = open > 0 ? ((ltp - open)) : 0;
   return (
     <AppText className={className} textSize={textSize}>
       {FormatNumber(change / 100)}

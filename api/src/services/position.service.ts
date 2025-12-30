@@ -3,6 +3,7 @@ import userModel from "@models/userModel";
 import { PositionDTO, PositionParams } from "types/position";
 import { tickMap } from "./ticks.service";
 import { redis } from "@config/redis.config";
+import { futures, options } from "../types/instrument";
 
 export const loadPositionsFromRedis = async () => {
   const keys = await redis.keys("trick:positions:*");
@@ -55,13 +56,25 @@ export const positionService = async ({
   const tick = tickMap.get(order.token);
   if (!tick) throw new Error("Tick not found");
 
-  const ltp = Number(tick.last_traded_price);
+  const ltp = Number(tick?.last_traded_price ?? 0);
 
-  const margin = ((ltp / 100) * order.quantity);
+  let margin = 0;
+  let brokerage = 0;
 
-  const brokerage = ((ltp / 100) * order.quantity) / 100;
+  if (options.has(instrument.instrumentType)) {
+    margin =
+      ((ltp / 100) * (order.quantity / instrument.lotSize)) / user.optMargin;
+
+    brokerage = (order.quantity / instrument.lotSize) * user.optBrokerage;
+  }
+
+  if (futures.has(instrument.instrumentType)) {
+    margin = user.futMargin * (order.quantity / instrument.lotSize);
+    brokerage = (order.quantity / instrument.lotSize) * user.futBrokerage;
+  }
 
   const totalAmount = margin + brokerage;
+  console.log(totalAmount)
 
   const userId = String(user._id);
   const token = instrument.token;

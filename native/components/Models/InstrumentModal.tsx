@@ -24,8 +24,8 @@ export default function InstrumentModal({
       token: instrument?.token,
       exchangeType: instrument?.exchangeSegment,
     });
-  } , [instrument?.exchangeSegment, instrument?.token]);
-  
+  }, [instrument?.exchangeSegment, instrument?.token]);
+
   return (
     <AppModal onPress={onClose}>
       <Pressable className="flex-col gap-6 rounded-t-3xl bg-background pb-12 px-8 py-4">
@@ -39,8 +39,11 @@ export default function InstrumentModal({
               {instrument?.exchangeSegment}
             </AppText>
             <AppTickPrice item={instrument} />
-            <AppTickChange item={instrument} className="text-textMuted" />
-            <AppTickChangePercent item={instrument} className="text-textMuted" />
+            <AppTickChange item={instrument} className="text-textSecondary" />
+            <AppTickChangePercent
+              item={instrument}
+              className="text-textSecondary"
+            />
           </View>
         </View>
 
@@ -74,7 +77,10 @@ export default function InstrumentModal({
 
         {/* 3 row */}
         <View className="flex-row items-center justify-between">
-          <TouchableOpacity className="flex-row gap-2 items-center justify-cemter">
+          <TouchableOpacity
+            className="flex-row gap-2 items-center justify-cemter"
+            onPress={() => router.push(`/chart/${instrument?.token}`)}
+          >
             <Feather name="bar-chart" color={"#538BE3"} size={14} />
             <AppText className="text-brand" textSize={14}>
               View Chart

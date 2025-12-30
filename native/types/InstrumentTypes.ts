@@ -6,3 +6,6 @@ export interface InstrumentResponse {
   instrumentType: string;
   exchangeSegment: string;
 }
+
+export const options = new Set(["OPTFUT", "OPTIDX", "OPTSTK"]);
+export const futures = new Set(["FUTCOM", "FUTIDX", "FUTSTK"]);

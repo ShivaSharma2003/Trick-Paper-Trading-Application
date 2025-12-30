@@ -17,6 +17,7 @@ import useCalculation from "@/hooks/useCalculation";
 import { FormatNumber } from "@/utils/Formatter";
 import { tradeType, transactionType } from "@/types/OrderTypes";
 import { createOrder } from "@/redux/slices/OrderSlice";
+import { options } from "@/types/InstrumentTypes";
 
 const BuyScreen = () => {
   const dispatch = useAppDispatch();
@@ -109,7 +110,7 @@ const BuyScreen = () => {
                 Lot
               </AppText>
               <AppText className="text-textMuted" textSize={12}>
-                {lotQuantity * (instrument === null ? 0 : instrument?.lotSize)}
+                {lotQuantity * (instrument?.lotSize ?? 0)}
               </AppText>
             </View>
             <View className="px-2 py-2 border border-border flex-row items-center">
@@ -119,11 +120,18 @@ const BuyScreen = () => {
                 placeholderTextColor={"#A3A3B3"}
                 style={{ fontFamily: "interSemiBold" }}
                 keyboardType="number-pad"
-                onChangeText={(value) =>
-                  value.length === 0
-                    ? setLotQuantity(0)
-                    : setLotQuantity(Number(value))
-                }
+                onChangeText={(value) => {
+                  const qty = Number(value);
+                  const type = instrument?.instrumentType ?? "";
+
+                  if (options.has(type)) {
+                    // OPTIONS: minimum 1 lot
+                    setLotQuantity(qty >= 1 ? qty : 1);
+                  } else {
+                    // NON-OPTIONS: allow any value
+                    setLotQuantity(qty);
+                  }
+                }}
               />
             </View>
           </View>

@@ -9,7 +9,6 @@ const AuthLayout = () => {
     if (token) router.replace("/");
   }, [token]);
 
-  
   return (
     <SafeAreaView className="flex-1 justify-center px-4 bg-background">
       <Slot />

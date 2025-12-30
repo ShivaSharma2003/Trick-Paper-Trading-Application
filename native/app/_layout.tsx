@@ -32,6 +32,7 @@ export default function RootLayout() {
           <Stack.Screen name="funds" />
           <Stack.Screen name="user" />
           <Stack.Screen name="statement" />
+          <Stack.Screen name="chart" />
         </Stack>
       </Provider>
     </>

@@ -84,7 +84,7 @@ server.listen(process.env.PORT, () =>
 );
 
 import { storeInstrument } from "@helpers/instrument";
-storeInstrument(); 
+// storeInstrument(); 
 
 // Scheduler for fetching instruments every morning @08:30 AM
 import { fetchInstrumentScheduler } from "@helpers/scheduler";

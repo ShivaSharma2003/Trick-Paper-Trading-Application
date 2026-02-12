@@ -19,6 +19,7 @@ export interface UserDTO {
   availableFunds: number;
   brokerId: any;
   isDemoId: boolean;
+  isAccountBlocked: boolean;
   comparePassword: (password: string) => boolean;
 }
 

@@ -17,7 +17,8 @@ const userSchema = new mongoose.Schema(
     phoneNumber: { type: String },
     role: { type: String, default: "USER"},
     userName: { type: String },
-    isDemoId : {type : Boolean , default : true}
+    isDemoId : {type : Boolean , default : true},
+    isAccountBlocked : {type : Boolean , default: false},
   },
   { timestamps: true },
 );

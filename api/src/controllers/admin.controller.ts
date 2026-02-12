@@ -103,10 +103,11 @@ export const fetchClientById = async (req, res) => {
     const isAdmin = await adminModel.findOne({ _id: req.user.id });
     if (!isAdmin)
       return res.status(401).json({ message: "UnAuthorized Request" });
-    const client = await userModel.findById(clientId).populate("orderId");
+    const client = await userModel.findById(clientId);
     return res.status(200).json({ client });
   } catch (error) {
-    return res.status(401).json({ message: "Bad Request" });
+    console.log(error)
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 

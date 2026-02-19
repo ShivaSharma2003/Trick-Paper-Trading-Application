@@ -2,28 +2,6 @@ import adminModel from "@models/adminModel";
 import brokerModel from "@models/brokerModel";
 import OrderModel from "@models/orderModel";
 import userModel from "@models/userModel";
-import generateToken from "@util/generateToken";
-
-export const loginAdminUser = async (req, res) => {
-  try {
-    const { userId, password } = req.body;
-    if (!userId || !password)
-      return res.status(401).json({ message: "userId or password invalid" });
-
-    const admin = await adminModel.findOne({ userId });
-    if (!admin)
-      return res.status(401).json({ message: "userId or password invalid" });
-
-    const verified = await admin.comparePassword(password);
-    if (!verified)
-      return res.status(401).json({ message: "userId or password invalid" });
-    console.log(admin._id);
-    const token = await generateToken({ id: admin._id, role: admin.role });
-    return res.status(200).json({ token });
-  } catch (error) {
-    return res.status(401).json({ message: "Bad Request" });
-  }
-};
 
 export const registerClientByAdmin = async (req, res) => {
   try {

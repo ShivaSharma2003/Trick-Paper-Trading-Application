@@ -11,7 +11,7 @@ interface authSliceInitialState {
   profile: UserResponse | null;
 }
 
-interface AuthRegisterPayload {
+interface AuthLoginPayload {
   userId: string;
   password: string;
 }
@@ -24,11 +24,11 @@ const initialState: authSliceInitialState = {
   profile: null,
 };
 
-export const registerAccount = createAsyncThunk(
-  "register/account",
-  async (payload: AuthRegisterPayload, { rejectWithValue }) => {
+export const loginAccount = createAsyncThunk(
+  "login/account",
+  async (payload: AuthLoginPayload, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.post("/user/auth/register", payload);
+      const { data } = await axiosInstance.post("/auth/client/login", payload);
       await AsyncStorage.setItem("native-token", data.token);
       return data.token;
     } catch (error) {
@@ -80,15 +80,15 @@ const authSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(registerAccount.pending, (state) => {
+      .addCase(loginAccount.pending, (state) => {
         state.loading = true;
       })
-      .addCase(registerAccount.fulfilled, (state, action) => {
+      .addCase(loginAccount.fulfilled, (state, action) => {
         state.loading = false;
         state.token = action.payload;
         state.loggedIn = true;
       })
-      .addCase(registerAccount.rejected, (state, action) => {
+      .addCase(loginAccount.rejected, (state, action) => {
         state.loading = false;
         state.loggedIn = false;
         state.error = action.error as string;

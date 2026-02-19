@@ -26,6 +26,7 @@ const SearchedItemContainer: FC<SearchedItemContainerProps> = ({
     const iswatchlisted = watchlists.find((it) => it.token === item.token);
     setWatchlisted(!!iswatchlisted);
   }, [item.token, watchlists]);
+  
   return (
     <TouchableOpacity
       className="flex-row items-center justify-between gap-4 border-b border-border py-4 px-4"

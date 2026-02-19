@@ -1,24 +1,39 @@
 import AppText from "@/components/Common/AppText";
 import SearchedItemContainer from "@/components/Container/SearchedItemContainer";
 import InstrumentModal from "@/components/Models/InstrumentModal";
-import { useAppSelector } from "@/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import {
+  addtoRecentSearches,
+  loadRecentSearches,
+} from "@/redux/slices/recentSearchSlice";
 import { InstrumentResponse } from "@/types/InstrumentTypes";
 import SearchInstruments from "@/utils/SearchInstruments";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FlatList, Modal, Pressable, TextInput, View } from "react-native";
 
 const SearchScreen = () => {
+  const dispatch = useAppDispatch();
   const [query, setQuery] = useState<string>("");
   const { response } = useAppSelector((state) => state.instrument);
+  const { recentSearch } = useAppSelector((state) => state.recentSearch);
   const [selectedInstrument, setSelectedInstrument] =
     useState<InstrumentResponse | null>(null);
 
+  useEffect(() => {
+    dispatch(loadRecentSearches());
+  }, [dispatch]);
+
   const SearchedInstruments = useMemo(
     () => SearchInstruments({ query, items: response }),
-    [query, response]
+    [query, response],
   );
+
+  const selectInstrument = (item: InstrumentResponse) => {
+    setSelectedInstrument(item);
+    dispatch(addtoRecentSearches(item));
+  };
 
   return (
     <View>
@@ -48,12 +63,12 @@ const SearchScreen = () => {
 
       {/* Lists of Items */}
       <FlatList
-        data={query === "" ? response : SearchedInstruments}
+        data={query === "" ? recentSearch : SearchedInstruments}
         renderItem={({ item }) => {
           return (
             <SearchedItemContainer
               item={item}
-              onSelect={() => setSelectedInstrument(item)}
+              onSelect={() => selectInstrument(item)}
             />
           );
         }}

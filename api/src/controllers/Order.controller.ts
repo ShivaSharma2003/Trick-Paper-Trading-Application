@@ -2,7 +2,6 @@ import { OrderCreateEngine } from "@services/order.service";
 import OrderModel from "@models/orderModel";
 import { endOfDay, startOfDay } from "@util/date";
 import { initExecution } from "@services/execute.service";
-import expressAsyncHandler from "express-async-handler";
 
 export const createOrder = async (req, res) => {
   try {
@@ -15,8 +14,7 @@ export const createOrder = async (req, res) => {
       limit,
       triggerPrice,
     } = req.body;
-
-    console.log(req.body);
+    
     const order = await OrderCreateEngine({
       lotQuantity,
       orderType,

@@ -13,6 +13,8 @@ const userSchema = new mongoose.Schema(
     email: { type: String },
     optMargin: { type: Number, required: true },
     futMargin: { type: Number, required: true },
+    futBrokerage : {type : Number, required : true, default: 500},
+    optBrokerage : {type : Number, required : true, default: 20},
     pancardNumber: { type: String },
     phoneNumber: { type: String },
     role: { type: String, default: "USER"},

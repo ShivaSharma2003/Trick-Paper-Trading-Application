@@ -71,11 +71,11 @@ export const positionService = async ({
   if (futures.has(instrument.instrumentType)) {
     margin = user.futMargin * (order.quantity / instrument.lotSize);
     brokerage = (order.quantity / instrument.lotSize) * user.futBrokerage;
+    console.log(margin)
+    console.log(brokerage)
   }
 
   const totalAmount = margin + brokerage;
-  console.log(totalAmount)
-
   const userId = String(user._id);
   const token = instrument.token;
 

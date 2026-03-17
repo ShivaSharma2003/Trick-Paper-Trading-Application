@@ -80,18 +80,16 @@ app.use("*", (req, res) => {
 // Open Server on configurated Port
 
 server.listen(process.env.PORT, () =>
-  console.info("Server listening on port ", process.env.PORT)
+  console.info("Server listening on port ", process.env.PORT),
 );
 
 import { storeInstrument } from "@helpers/instrument";
-// storeInstrument(); 
+// storeInstrument();
 
 // Scheduler for fetching instruments every morning @08:30 AM
 import { fetchInstrumentScheduler } from "@helpers/scheduler";
 fetchInstrumentScheduler();
 
 // SmartApi Connection
-import TickEngine from "@services/ticks.service";
-TickEngine();
-
-// For testing only
+import SmartAPITickEngine from "@config/smartAPI";
+SmartAPITickEngine();

@@ -1,9 +1,9 @@
 import PositionModel from "@models/positionModel";
 import userModel from "@models/userModel";
 import { PositionDTO, PositionParams } from "types/position";
-import { tickMap } from "./ticks.service";
+import { tickMap } from "@config/smartAPI";
 import { redis } from "@config/redis.config";
-import { futures, options } from "../types/instrument";
+import { futures, InstrumentDTO, options } from "../types/instrument";
 
 export const loadPositionsFromRedis = async () => {
   const keys = await redis.keys("trick:positions:*");
@@ -71,8 +71,6 @@ export const positionService = async ({
   if (futures.has(instrument.instrumentType)) {
     margin = user.futMargin * (order.quantity / instrument.lotSize);
     brokerage = (order.quantity / instrument.lotSize) * user.futBrokerage;
-    console.log(margin)
-    console.log(brokerage)
   }
 
   const totalAmount = margin + brokerage;
@@ -88,6 +86,7 @@ export const positionService = async ({
     const position: PositionDTO = {
       userId,
       token,
+      instrument,
       quantity: order.quantity,
       symbol: order.symbol,
       type: order.orderType,
@@ -145,7 +144,7 @@ export const positionService = async ({
     await userModel.findByIdAndUpdate(userId, {
       $inc: {
         availableFunds:
-          existedPosition.exitedAverage * existedPosition.quantity - brokerage,
+          existedPosition.exitedAverage * (existedPosition.quantity / existedPosition.instrument.lotSize) - brokerage,
       },
     });
 
@@ -166,6 +165,7 @@ export const positionService = async ({
     const newPosition: PositionDTO = {
       userId,
       token,
+      instrument,
       quantity: leftQty,
       symbol: order.symbol,
       type: order.orderType,

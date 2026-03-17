@@ -14,6 +14,7 @@ export interface PositionParams {
 export interface PositionDTO {
   userId: string;
   token: string;
+  instrument: InstrumentDTO;
   quantity: number;
   symbol: string;
   type: orderType;

@@ -4,7 +4,7 @@ import { UserDTO } from "types/User";
 import OrderModel from "@models/orderModel";
 import userModel from "@models/userModel";
 import InstrumentModel from "@models/instrumentModel";
-import { tickMap } from "./ticks.service";
+import { tickMap } from "@config/smartAPI";
 import { positionService } from "./position.service";
 
 export const initExecution = async (order: OrderDTO) => {

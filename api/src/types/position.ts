@@ -20,10 +20,12 @@ export interface PositionDTO {
   type: orderType;
   createdAt: Date;
   exitedAt: Date | null;
-  totalAmount: number;
   average: number;
   exitedAverage: number | null;
   status: positionStatus;
   tradeType: tradeType;
   exchangeSegment: string;
+  orderMargin: number;
+  orderBrokerage: number;
+  totalOrderAmount: number;
 }

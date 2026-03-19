@@ -37,7 +37,7 @@ const SmartAPITickEngine = () => {
     const session = await smartApi.generateSession(
       process.env.SMART_API_CLIENT_ID!,
       process.env.SMART_API_CLIENT_PASSWORD!,
-      generateTOTP()
+      generateTOTP(),
     );
     if (!session.status) throw new Error(session.message);
     return session;
@@ -52,13 +52,6 @@ const SmartAPITickEngine = () => {
       feedtype: session.data.feedToken,
     });
 
-    // ✅ ALL YOUR EVENT HANDLERS IN ONE PLACE
-    ws.on("tick", (data) => {
-      if (data === "pong") return;
-      const token = String(data.token).replace(/"/g, "").trim();
-      tickMap.set(token, { ...data, token });
-    });
-
     ws.on("error", () => {
       console.log("❌ WS Error - Session hook will handle");
     });
@@ -70,6 +63,15 @@ const SmartAPITickEngine = () => {
     ws.on("open", () => {
       console.log("✅ WS Connected");
       subscribeInstrument(); // Auto-resubscribe
+    });
+
+    subscribeInstrument()
+
+    // ✅ ALL YOUR EVENT HANDLERS IN ONE PLACE
+    ws.on("tick", (data) => {
+      if (data === "pong") return;
+      const token = String(data.token).replace(/"/g, "").trim();
+      tickMap.set(token, { ...data, token });
     });
 
     await ws.connect();
@@ -111,7 +113,7 @@ const SmartAPITickEngine = () => {
   // 7. Socket.io handlers (your existing logic)
   io.on("connection", (socket) => {
     console.log("🟢 User Connected " + socket.id);
-    
+
     const handleSubscribe = (token: string, exchangeType: segment) => {
       if (!tokenMap.has(token)) {
         tokenMap.set(token, { token, exchangeType });
@@ -120,14 +122,14 @@ const SmartAPITickEngine = () => {
       }
     };
 
-    socket.on("subscribe", ({ token, exchangeType }: payload) => 
-      handleSubscribe(token, exchangeType)
+    socket.on("subscribe", ({ token, exchangeType }: payload) =>
+      handleSubscribe(token, exchangeType),
     );
-    
-    socket.on("watchlist", ({ token, exchangeType }: payload) => 
-      handleSubscribe(token, exchangeType)
+
+    socket.on("watchlist", ({ token, exchangeType }: payload) =>
+      handleSubscribe(token, exchangeType),
     );
-    
+
     socket.on("disconnect", () => console.log("🔴 User Disconnected"));
   });
 
